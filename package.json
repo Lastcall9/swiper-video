@@ -17,7 +17,13 @@
     "swiper": "latest",
     "vite": "latest",
     "vue": "latest",
-    "xgplayer": "latest"
+    "xgplayer": "latest",
+    "dayjs": "^1.11.21"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
   },
   "devDependencies": {}
 }
