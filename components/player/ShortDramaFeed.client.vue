@@ -1,11 +1,13 @@
 ﻿<template>
-  <div class="feed">
+  <div ref="feedRef" class="feed">
     <AuthStatusButton />
 
     <Swiper
       direction="vertical"
       :allow-slide-next="canSlideNext"
       :allow-slide-prev="canSlidePrev"
+      :modules="swiperModules"
+      :mousewheel="mousewheelOptions"
       :slides-per-view="1"
       :speed="260"
       class="feed__swiper"
@@ -32,20 +34,32 @@
 </template>
 
 <script setup>
+import { useEventListener, useThrottleFn } from '@vueuse/core'
 import { ref } from 'vue'
+import { Mousewheel } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { useAuthStore } from '~/stores/auth'
 import { useUiStore } from '~/stores/ui'
 import 'swiper/css'
 
+const WHEEL_THRESHOLD = 24
+
 const authStore = useAuthStore()
 const uiStore = useUiStore()
+const feedRef = ref(null)
 const activeIndex = ref(0)
 const swiperRef = ref(null)
 const canSlideNext = ref(true)
 const canSlidePrev = ref(true)
 const revertingSlide = ref(false)
 const paywallEpisode = ref(null)
+const swiperModules = [Mousewheel]
+const mousewheelOptions = {
+  enabled: true,
+  forceToAxis: true,
+  releaseOnEdges: false,
+  thresholdDelta: WHEEL_THRESHOLD
+}
 
 const episodes = ref([
   {
@@ -133,6 +147,36 @@ const onTouchEnd = (swiper) => {
     allowed
   })
 }
+
+const handleWheel = (event) => {
+  if (Math.abs(event.deltaY) < WHEEL_THRESHOLD) return
+
+  const direction = event.deltaY > 0 ? 'next' : 'prev'
+  const targetIndex = activeIndex.value + (direction === 'next' ? 1 : -1)
+  const allowed = canSlide(direction, targetIndex)
+
+  onSlideAttempt({
+    direction,
+    from: activeIndex.value,
+    to: targetIndex,
+    allowed,
+    input: 'wheel'
+  })
+
+  if (!allowed) {
+    onSlideBlocked({
+      direction,
+      from: activeIndex.value,
+      to: targetIndex,
+      reason: getBlockReason(direction, targetIndex),
+      input: 'wheel'
+    })
+  }
+}
+
+const onWheel = useThrottleFn(handleWheel, 360, true, false)
+
+useEventListener(feedRef, 'wheel', onWheel, { passive: true })
 
 const playNext = () => {
   if (!swiperRef.value) return

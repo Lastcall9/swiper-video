@@ -26,7 +26,7 @@
 - 不新增普通函数声明，例如不要写 `function playNext() {}`。
 - 表单字段清洗优先放在模板层，例如 `v-model.trim`，不要在提交逻辑里到处写 `String(...).trim()`。
 - 接口返回按约定结构处理，不要堆过多防御式类型判断。
-- 能用 VueUse 的状态/计时/浏览器能力优先用 VueUse。
+- 能用 VueUse 工具函数的情况下尽量用 VueUse 工具函数，避免重复实现相同功能。
 - 组件样式使用 `lang="scss"`。
 - 播放器相关代码只在客户端运行，优先使用 `.client.vue` 或 `<ClientOnly>`。
 
