@@ -1,4 +1,4 @@
-import { useTurnstileScript } from '~/composables/auth/useTurnstileScript'
+﻿import { useTurnstileScript } from '~/composables/auth/useTurnstileScript'
 import { useAuthStore } from '~/stores/auth'
 import { useUiStore } from '~/stores/ui'
 
@@ -14,6 +14,7 @@ export const useHumanVerification = () => {
   const turnstile = useTurnstileScript()
   const { turnstileToken, isVerified, turnstileContainerRef, renderTurnstile, resetTurnstile, destroyTurnstile } = turnstile
 
+  const apiBaseUrl = computed(() => runtimeConfig.public.apiBaseUrl || '')
   const turnstileSiteKey = computed(() => runtimeConfig.public.turnstileSiteKey || '')
   const hasTurnstileSiteKey = computed(() => Boolean(turnstileSiteKey.value))
   const isWaitingHumanVerificationCheck = computed(() => (
@@ -45,6 +46,8 @@ export const useHumanVerification = () => {
   }
 
   const resolveHumanVerificationRequired = async () => {
+    if (!apiBaseUrl.value) return false
+
     try {
       return await authStore.checkHumanVerificationRequired(buildHumanVerificationPayload())
     } catch (error) {

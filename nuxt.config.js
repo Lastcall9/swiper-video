@@ -2,6 +2,15 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@pinia/nuxt'],
   css: ['~/assets/css/main.css'],
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vueuse/core',
+        'swiper/vue',
+        'xgplayer',
+      ]
+    }
+  },
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.NUXT_API_BASE || '',
