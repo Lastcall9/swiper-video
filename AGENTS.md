@@ -32,7 +32,7 @@
 
 ## 播放组件
 
-### `components/ShortDramaFeed.client.vue`
+### `components/player/ShortDramaFeed.client.vue`
 
 外层短剧信息流组件，负责 Swiper 竖向滑动。
 
@@ -47,7 +47,7 @@
 
 当前示例里，第 2 集以后需要登录才允许继续向下滑。
 
-### `components/ShortDramaPlayer.vue`
+### `components/player/ShortDramaPlayer.vue`
 
 单集播放器组件，负责创建和销毁 xgplayer 实例。
 
@@ -77,9 +77,9 @@
 - `core/api/token.js`：token 状态和 localStorage 持久化，使用 VueUse `useLocalStorage`。
 - `stores/auth.js`：登录态、注册、登录、Google 登录、发码、退出登录。
 - `stores/ui.js`：登录弹层和 toast。
-- `components/AuthModal.vue`：简化 UI 的登录/注册弹层。
-- `components/AuthStatusButton.vue`：页面左上角登录状态入口。
-- `components/ToastHost.vue`：全局 toast。
+- `components/auth/AuthModal.vue`：简化 UI 的登录/注册弹层。
+- `components/auth/AuthStatusButton.vue`：页面左上角登录状态入口。
+- `components/feedback/ToastHost.vue`：全局 toast。
 
 ## Google 登录和 CF Turnstile
 

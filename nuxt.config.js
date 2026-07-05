@@ -2,6 +2,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@pinia/nuxt'],
   css: ['~/assets/css/main.css'],
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+      extensions: ['vue']
+    }
+  ],
   vite: {
     optimizeDeps: {
       include: [
