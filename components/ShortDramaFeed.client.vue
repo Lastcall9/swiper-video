@@ -1,5 +1,7 @@
 ﻿<template>
   <div class="feed">
+    <AuthStatusButton />
+
     <Swiper
       direction="vertical"
       :allow-slide-next="canSlideNext"
@@ -27,8 +29,12 @@
 <script setup>
 import { ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
+import { useAuthStore } from '~/stores/auth'
+import { useUiStore } from '~/stores/ui'
 import 'swiper/css'
 
+const authStore = useAuthStore()
+const uiStore = useUiStore()
 const activeIndex = ref(0)
 const swiperRef = ref(null)
 const canSlideNext = ref(true)
@@ -114,6 +120,7 @@ const canSlide = (direction, targetIndex) => {
   if (targetIndex < 0 || targetIndex >= episodes.value.length) return false
   if (direction === 'next' && !canSlideNext.value) return false
   if (direction === 'prev' && !canSlidePrev.value) return false
+  if (direction === 'next' && targetIndex >= 1 && !authStore.isAuthenticated) return false
 
   // Put trial/payment/ad checks here. Return false to block the swipe.
   return true
@@ -124,6 +131,7 @@ const getBlockReason = (direction, targetIndex) => {
   if (targetIndex >= episodes.value.length) return 'last_episode'
   if (direction === 'next' && !canSlideNext.value) return 'next_disabled'
   if (direction === 'prev' && !canSlidePrev.value) return 'prev_disabled'
+  if (direction === 'next' && targetIndex >= 1 && !authStore.isAuthenticated) return 'login_required'
   return 'business_rule'
 }
 
@@ -133,6 +141,11 @@ const onSlideAttempt = (payload) => {
 
 const onSlideBlocked = (payload) => {
   track({ event: 'slide_blocked', ...payload })
+
+  if (payload.reason === 'login_required') {
+    uiStore.toast('请先登录后继续观看', 'info')
+    uiStore.openAuth('login')
+  }
 }
 
 const onSlideSuccess = (payload) => {
@@ -140,6 +153,12 @@ const onSlideSuccess = (payload) => {
 }
 
 const toggleFavorite = (id) => {
+  if (!authStore.isAuthenticated) {
+    uiStore.toast('登录后才能收藏', 'info')
+    uiStore.openAuth('login')
+    return
+  }
+
   const item = episodes.value.find((episode) => episode.id === id)
   if (item) item.favorite = !item.favorite
 }
@@ -149,7 +168,7 @@ const track = (payload) => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .feed {
   width: 100vw;
   height: 100dvh;

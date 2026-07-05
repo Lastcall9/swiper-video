@@ -8,8 +8,12 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
+    "@pinia/nuxt": "latest",
+    "@vueuse/core": "latest",
     "@vitejs/plugin-vue": "latest",
     "nuxt": "latest",
+    "pinia": "latest",
+    "sass": "latest",
     "swiper": "latest",
     "vite": "latest",
     "vue": "latest",

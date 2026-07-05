@@ -194,7 +194,7 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .player {
   position: relative;
   width: 100vw;
