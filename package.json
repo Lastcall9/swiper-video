@@ -25,5 +25,7 @@
       "path": "node_modules/cz-git"
     }
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "cz-git": "^1.12.0"
+  }
 }
