@@ -1,0 +1,19 @@
+{
+  "name": "nuxt-xgplayer-shortdrama",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev --host 127.0.0.1",
+    "build": "nuxt build",
+    "preview": "nuxt preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "latest",
+    "nuxt": "latest",
+    "swiper": "latest",
+    "vite": "latest",
+    "vue": "latest",
+    "xgplayer": "latest"
+  },
+  "devDependencies": {}
+}
