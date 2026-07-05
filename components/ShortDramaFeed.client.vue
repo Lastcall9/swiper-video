@@ -39,6 +39,7 @@ const activeIndex = ref(0)
 const swiperRef = ref(null)
 const canSlideNext = ref(true)
 const canSlidePrev = ref(true)
+const revertingSlide = ref(false)
 
 const episodes = ref([
   {
@@ -72,9 +73,32 @@ const onSwiper = (swiper) => {
 }
 
 const onSlideChange = (swiper) => {
+  if (revertingSlide.value) return
+
   const from = activeIndex.value
   const to = swiper.activeIndex
-  activeIndex.value = swiper.activeIndex
+  if (to === from) return
+
+  const direction = to > from ? 'next' : 'prev'
+  const allowed = canSlide(direction, to)
+
+  if (!allowed) {
+    onSlideBlocked({
+      direction,
+      from,
+      to,
+      reason: getBlockReason(direction, to)
+    })
+
+    revertingSlide.value = true
+    swiper.slideTo(from, 0, false)
+    requestAnimationFrame(() => {
+      revertingSlide.value = false
+    })
+    return
+  }
+
+  activeIndex.value = to
   onSlideSuccess({ from, to, episode: episodes.value[to] })
 }
 
@@ -91,15 +115,6 @@ const onTouchEnd = (swiper) => {
     to: targetIndex,
     allowed
   })
-
-  if (!allowed) {
-    onSlideBlocked({
-      direction,
-      from: activeIndex.value,
-      to: targetIndex,
-      reason: getBlockReason(direction, targetIndex)
-    })
-  }
 }
 
 const playNext = () => {

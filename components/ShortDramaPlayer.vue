@@ -82,22 +82,6 @@ const showPanel = ref('')
 const currentRate = ref(1)
 const rates = [0.75, 1, 1.25, 1.5, 2]
 
-watch(
-  () => props.active,
-  async (active) => {
-    if (active) {
-      await ensurePlayer()
-      tryAutoPlay()
-      emit('track', { event: 'play_visible', id: props.episode.id })
-      return
-    }
-
-    player.value?.pause()
-    showPanel.value = ''
-  },
-  { immediate: true }
-)
-
 const ensurePlayer = async () => {
   if (player.value) return
 
@@ -163,6 +147,22 @@ const tryAutoPlay = () => {
     })
   }
 }
+
+watch(
+  () => props.active,
+  async (active) => {
+    if (active) {
+      await ensurePlayer()
+      tryAutoPlay()
+      emit('track', { event: 'play_visible', id: props.episode.id })
+      return
+    }
+
+    player.value?.pause()
+    showPanel.value = ''
+  },
+  { immediate: true }
+)
 
 const togglePlay = () => {
   if (!player.value) return
